@@ -11,4 +11,5 @@ esbuild.build({
   outdir: 'dist',
   allowOverwrite: true,
   external: ['express', 'drizzle-orm', 'pg'],
+  plugins:[]
 });
