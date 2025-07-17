@@ -7,9 +7,12 @@ import { userRoutes } from './src/modules/users/routes';
 import { enrollmentRoutes } from './src/modules/enrollments/routes';
 import { searchRoutes } from './src/modules/search/routes';
 import { authRoutes } from './src/modules/auth/routes';
+import { chatRoutes } from './src/modules/chat/routes';
+import { aiRoutes } from './src/modules/ai/routes';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
 
 // Middleware
 app.use(
@@ -25,17 +28,6 @@ app.use(
 );
 
 app.use(express.json());
-
-// Request logging middleware
-app.use(
-  (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const logMessage = `🌐 ${req.method} ${req.url}`;
-    console.log(logMessage);
-    process.stdout.write(logMessage + '\n');
-    next();
-  }
-);
-
 // Root route
 app.get('/', (req: express.Request, res: express.Response) => {
   res.json({ message: 'Sentry Academy API', version: '1.0.0' });
@@ -54,6 +46,8 @@ app.use('/api', userRoutes);
 app.use('/api', enrollmentRoutes);
 app.use('/api', searchRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api', chatRoutes);
+app.use('/api', aiRoutes);
 
 // Error handling middleware
 // @ts-expect-error - implicit any

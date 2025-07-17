@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import { useAuth } from '../../hooks/useAuth';
+import { Chat } from '../chat/Chat';
 
 const MainLayout: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -16,6 +17,7 @@ const MainLayout: React.FC = () => {
           <Outlet />
         </div>
       </main>
+      <Chat />
     </div>
   );
 };

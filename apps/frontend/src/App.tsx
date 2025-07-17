@@ -11,7 +11,9 @@ import CourseDetailPage from './pages/CourseDetailPage';
 import MyCoursesPage from './pages/MyCoursesPage';
 import FavoritesPage from './pages/FavoritesPage';
 import LessonPlansPage from './pages/LessonPlansPage';
+import AiCourseBuilderPage from './pages/AiCourseBuilderPage';
 import ProfilePage from './pages/ProfilePage';
+
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -70,6 +72,12 @@ function App() {
               <Route path="lesson-plans" element={
                 <ProtectedRoute>
                   <LessonPlansPage />
+                </ProtectedRoute>
+              } />
+
+              <Route path="ai-course-builder" element={
+                <ProtectedRoute>
+                  <AiCourseBuilderPage />
                 </ProtectedRoute>
               } />
 

@@ -11,9 +11,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Bookmark,
-  GraduationCap
+  GraduationCap,
+  Sparkles
 } from 'lucide-react';
-import { Avatar } from '../ui/Avatar';
 
 interface SidebarItemProps {
   to: string;
@@ -112,6 +112,13 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           icon={<Bookmark size={20} />}
           label="Lesson Plans"
           isActive={isActive('/lesson-plans')}
+          isCollapsed={isCollapsed}
+        />
+        <SidebarItem
+          to="/ai-course-builder"
+          icon={<Sparkles size={20} />}
+          label="AI Course Builder"
+          isActive={isActive('/ai-course-builder')}
           isCollapsed={isCollapsed}
         />
       </nav>

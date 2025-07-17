@@ -104,6 +104,16 @@ export const api = {
     courses: (query: string) => 
       fetchApi<any[]>(`/search/courses?q=${encodeURIComponent(query)}`),
   },
+
+  // AI Course Generation
+  ai: {
+    generateCourse: (data: { prompt: string; instructorId?: string }) => 
+      fetchApi<any>('/ai/generate-course', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    getStats: () => fetchApi<any>('/ai/stats'),
+  },
 };
 
 export type { ApiError };

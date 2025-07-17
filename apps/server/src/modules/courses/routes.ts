@@ -145,33 +145,68 @@ courseRoutes.get('/courses/:id', async (req, res) => {
 
 // Create a new course (for instructors/admins)
 courseRoutes.post('/courses', async (req, res) => {
-  const { body } = req;
-  const courseId = createId();
-  const slug = body.title
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '');
+  try {
+    const { body } = req;
+    const courseId = createId();
+    const slug = body.title
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
 
-  const newCourse = await db
-    .insert(courses)
-    .values({
-      id: courseId,
-      title: body.title,
-      slug,
-      description: body.description,
-      instructorId: body.instructorId,
-      thumbnail: body.thumbnail,
-      category: body.category,
-      tags: body.tags || [],
-      level: body.level,
-      duration: body.duration,
-      price: body.price || '0',
-      prerequisites: body.prerequisites || [],
-      learningObjectives: body.learningObjectives || [],
-    })
-    .returning();
+    console.log('📚 Creating new course:', body.title);
 
-  res.status(201).json(newCourse[0]);
+    const newCourse = await db
+      .insert(courses)
+      .values({
+        id: courseId,
+        title: body.title,
+        slug,
+        description: body.description,
+        instructorId: body.instructorId,
+        thumbnail: body.thumbnail || '/default-course-thumbnail.jpg',
+        category: body.category,
+        tags: body.tags || [],
+        level: body.level,
+        duration: body.duration,
+        price: body.price || '0',
+        prerequisites: body.prerequisites || [],
+        learningObjectives: body.learningObjectives || [],
+        status: 'published', // Auto-publish AI-generated courses
+      })
+      .returning();
+
+    // If lessons are provided, create them too (for AI-generated courses)
+    if (body.lessons && Array.isArray(body.lessons)) {
+      console.log(`📖 Creating ${body.lessons.length} lessons for course`);
+      
+      const lessonsToInsert = body.lessons.map((lesson: any, index: number) => ({
+        id: createId(),
+        courseId: courseId,
+        title: lesson.title,
+        slug: lesson.title
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, ''),
+        description: lesson.description,
+        type: lesson.type || 'text',
+        content: lesson.content || lesson.description,
+        duration: lesson.duration,
+        order: lesson.order || index + 1,
+        isFree: index === 0, // Make first lesson free
+      }));
+
+      await db.insert(lessons).values(lessonsToInsert);
+      console.log('✅ Successfully created course with lessons');
+    }
+
+    res.status(201).json(newCourse[0]);
+  } catch (error) {
+    console.error('❌ Error creating course:', error);
+    res.status(500).json({ 
+      error: 'Failed to create course', 
+      message: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
 });
 
 // Update course

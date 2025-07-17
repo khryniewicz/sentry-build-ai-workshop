@@ -44,7 +44,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigationType, createRoutesFromChildren, matchRoutes } from "react-router-dom";
 
 Sentry.init({
-  dsn: "https://2cb8a9a7351068cebf07a5257ccca923@o4508130833793024.ingest.us.sentry.io/4509452972130304",
+  dsn: "https://238ed7e0b8c33a786e0a19b534bda162@o4508130833793024.ingest.us.sentry.io/4509481458204672",
 
   
   sendDefaultPii: true,
