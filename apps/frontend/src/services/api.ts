@@ -102,7 +102,7 @@ export const api = {
     // Frontend mistakenly sends: GET /search/courses?query=searchTerm
     // Fix: Change 'query' to 'q' to match backend API contract
     courses: (query: string) => 
-      fetchApi<any[]>(`/search/courses?q=${encodeURIComponent(query)}`),
+      fetchApi<any[]>(`/search/courses?query=${encodeURIComponent(query)}`),
   },
 
   // AI Course Generation
