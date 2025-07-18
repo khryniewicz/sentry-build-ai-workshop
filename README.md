@@ -1,10 +1,19 @@
-# Sentry Academy Workshop: Debugging SSO Authentication Failures
+# Sentry Academy Workshop Application
 
-A hands-on workshop demonstrating realistic debugging scenarios for SSO authentication and search functionality failures using Sentry monitoring and distributed tracing.
+A full-stack web application built for hands-on debugging workshops that demonstrate realistic SSO authentication and search functionality failures using Sentry monitoring and distributed tracing.
 
-## 🎯 Workshop Overview
+## 📚 Application Overview
 
-This workshop simulates real-world scenarios where frontend and backend teams have miscommunications about API contracts, leading to authentication and search failures. Both applications include Sentry monitoring to automatically capture and debug these errors.
+The Sentry Academy Application is an educational platform that simulates a course management system with user authentication, course browsing, and search functionality. It's specifically designed to showcase common real-world debugging scenarios where frontend and backend teams have miscommunications about API contracts.
+
+### Key Features
+
+- **SSO Authentication** - Google, Microsoft, and Okta login integration
+- **Course Management** - Browse courses with categories, levels, and detailed content
+- **Search Functionality** - Search courses with filtering capabilities
+- **User Profiles** - Student, instructor, and admin role management
+- **Progress Tracking** - Lesson completion and enrollment tracking
+- **Monitoring & Observability** - Comprehensive Sentry integration for error tracking
 
 ### Workshop Scenarios
 
@@ -25,28 +34,41 @@ This is a **pnpm monorepo** with two main applications:
 └── package.json           # Root workspace package.json
 ```
 
-### Technology Stack
-
-#### Frontend Application (`@sentry-academy/frontend`)
-- **Framework:** React 19.1.0 with React DOM
-- **Build Tool:** Vite 5.4.2
-- **Language:** TypeScript 5.5.3
+### Frontend Application (`apps/frontend/`)
+- **Framework:** React 19.1.0 with TypeScript and Vite
 - **Styling:** Tailwind CSS 4.1.8
-- **Routing:** React Router DOM 7.6.2
-- **Icons:** Lucide React 0.513.0
-- **Markdown:** React Markdown 10.1.0 with syntax highlighting
-- **Monitoring:** Sentry React SDK 9.26.0
-- **Linting:** ESLint 9.9.1 with React-specific plugins
+- **Routing:** React Router DOM 7.6.2  
+- **State Management:** React contexts (AuthContext, UserStateContext)
+- **Monitoring:** Sentry React SDK for error tracking and performance
+- **Key Features:**
+  - Modern React with hooks and contexts
+  - Responsive design with Tailwind CSS
+  - SSO authentication flows
+  - Course browsing and search interface
+  - User profile and progress tracking
 
-#### Backend Application (`@sentry-academy/server`)
-- **Runtime:** Node.js with Express 5.1.0
-- **Language:** TypeScript 5.0.0
+### Backend Application (`apps/server/`)
+- **Framework:** Express 5.1.0 with TypeScript
 - **Database:** PostgreSQL with Drizzle ORM 0.44.2
-- **Build Tool:** esbuild 0.25.5
-- **Development:** tsx 4.0.0 for hot reload
-- **Monitoring:** Sentry Node SDK 9.26.0 with profiling
-- **Security:** CORS enabled for cross-origin requests
-- **ID Generation:** @paralleldrive/cuid2 2.2.2
+- **Build:** esbuild for production builds
+- **Development:** tsx for hot reload
+- **Monitoring:** Sentry Node SDK with profiling and distributed tracing
+- **Key Features:**
+  - RESTful API with modular route structure
+  - JWT-based authentication with SSO providers
+  - Course and user management
+  - Search functionality with filtering
+  - Comprehensive error handling and monitoring
+
+### Database Schema
+- **users** - User accounts with roles (student, instructor, admin)
+- **courses** - Course catalog with categories, levels, and metadata
+- **lessons** - Individual lessons within courses (video, text, quiz, assignment)
+- **enrollments** - User-course relationships with progress tracking
+- **lessonProgress** - Detailed progress tracking per lesson
+- **reviews** - Course reviews and ratings
+- **categories** - Course categorization
+- **certificates** - Course completion certificates
 
 ## 🚀 Getting Started
 
@@ -54,71 +76,83 @@ This is a **pnpm monorepo** with two main applications:
 
 - **Node.js** (v18 or higher)
 - **pnpm** (v9 or higher)
-- **PostgreSQL** (for database functionality)
+- **OpenAI API Key** (for AI-powered features)
 
-### Installation
+### Quick Setup (Workshop)
 
-1. **Clone the repository and install dependencies:**
+For workshop participants, follow these steps:
+
+1. **Clone and install dependencies:**
    ```bash
    git clone <repository-url>
-   cd sentry-academy
+   cd sentry-academy-workshop
    pnpm install
    ```
 
-2. **Environment Setup:**
-   Create `.env` files in both applications:
+2. **Database setup with Neon:**
+   ```bash
+   cd apps/server
+   npx neondb -y  # Creates a PostgreSQL database (Neon is awesome!)
+   npx drizzle-kit push  # Push schema to database
+   pnpm db:seed  # Seed with course data
+   ```
+
+3. **Environment configuration:**
+   
+   **Server (`apps/server/.env`):**
+   ```env
+   PORT=3001
+   DATABASE_URL=<from-neon-setup>
+   OPENAI_API_KEY=your-openai-api-key
+   SENTRY_DSN=your-sentry-dsn
+   ```
    
    **Frontend (`apps/frontend/.env`):**
    ```env
    VITE_API_URL=http://localhost:3001
    VITE_SENTRY_DSN=your-sentry-dsn
    ```
-   
-   **Server (`apps/server/.env`):**
-   ```env
-   PORT=3001
-   DATABASE_URL=postgresql://username:password@localhost:5432/sentry_academy
-   SENTRY_DSN=your-sentry-dsn
+
+4. **Update Sentry configuration:**
+   - Update Sentry initialization in both apps with your project details
+   - See `apps/frontend/src/main.tsx` and `apps/server/src/index.ts`
+
+5. **Start the application:**
+   ```bash
+   cd ../..  # Back to root directory
+   pnpm dev
    ```
 
-3. **Database Setup:**
+### Manual Database Setup (Alternative)
+
+If you prefer to set up PostgreSQL manually:
+
+1. **Install and configure PostgreSQL**
+2. **Create database:**
+   ```sql
+   CREATE DATABASE sentry_academy;
+   ```
+3. **Run migrations:**
    ```bash
-   # Navigate to server directory
    cd apps/server
-   
-   # Generate database schema
    pnpm db:generate
-   
-   # Run migrations
    pnpm db:migrate
-   
-   # Seed database with sample data
    pnpm db:seed
    ```
 
-### Development
+### Accessing the Application
 
-1. **Start both applications:**
-   ```bash
-   pnpm dev
-   ```
-   
-   This starts:
-   - Frontend: `http://localhost:5173`
-   - Backend: `http://localhost:3001`
+Once everything is running:
 
-2. **Or start individually:**
-   ```bash
-   # Start only frontend
-   pnpm dev:frontend
-   
-   # Start only backend  
-   pnpm dev:server
-   ```
+- **Frontend:** `http://localhost:5173` - React application with course browsing and authentication
+- **Backend:** `http://localhost:3001` - Express API server
+- **Database Studio:** `pnpm db:studio` - Drizzle Studio for database management
 
-3. **Access the application:**
-   - Open your browser to `http://localhost:5173`
-   - You'll see the login form with SSO options
+You'll see the Sentry Academy homepage with:
+- Course catalog browsing
+- Search functionality 
+- SSO login options (Google, Microsoft, Okta)
+- User profile and progress tracking
 
 ## 🛠️ Available Scripts
 
@@ -182,16 +216,16 @@ This is a **pnpm monorepo** with two main applications:
 3. Analyze trace data to identify root cause
 4. Fix parameter mismatches
 
-## 🔍 API Endpoints
+## 🔍 Key API Endpoints
 
-The server provides several API endpoints:
+The server provides several REST API endpoints:
 
-- `GET /api/courses` - List all courses
-- `GET /api/search/courses?q=term` - Search courses
-- `POST /api/auth/sso/:provider` - SSO authentication
-- `GET /api/lessons` - List lessons
-- `GET /api/users` - List users
-- `GET /api/enrollments` - List enrollments
+- `GET /api/courses` - List all courses with pagination
+- `GET /api/search/courses?q=term` - Search courses (note: uses `q` parameter)
+- `POST /api/auth/sso/:provider` - SSO authentication (Google, Microsoft, Okta)
+- `GET /api/lessons` - List lessons with course relationships
+- `GET /api/users` - List users with role information
+- `GET /api/enrollments` - List user course enrollments with progress
 
 ## 📊 Monitoring & Observability
 
@@ -215,15 +249,23 @@ Both applications are pre-configured with **Sentry** for:
 - Search functionality tracing
 - Authentication flow tracking
 
-## 🗄️ Database Schema
+## 🗄️ Database Management
 
-The application uses PostgreSQL with the following main entities:
-- **Users** - User accounts and profiles
-- **Courses** - Course catalog with instructors
-- **Lessons** - Individual lessons within courses
-- **Enrollments** - User course enrollments
+The application uses **PostgreSQL** with **Drizzle ORM** for type-safe database operations.
 
-Database operations are handled through Drizzle ORM with full TypeScript support.
+### Available Database Commands
+- `pnpm db:generate` - Generate database migrations
+- `pnpm db:migrate` - Run database migrations  
+- `pnpm db:seed` - Seed database with sample data
+- `pnpm db:studio` - Open Drizzle Studio for database management
+- `pnpm db:export` - Export database data to JSON files
+- `pnpm db:import` - Import database data from JSON files
+
+### Main Entities
+- **users** - User accounts with roles (student, instructor, admin)
+- **courses** - Course catalog with categories and metadata
+- **lessons** - Individual lessons within courses
+- **enrollments** - User-course relationships with progress tracking
 
 ## 🧪 Testing the Workshop
 
