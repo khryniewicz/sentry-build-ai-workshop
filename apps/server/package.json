@@ -6,7 +6,7 @@
     "dev": "tsx watch index.ts",
     "build": "node build.js",
     "start": "node dist/index.js",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "drizzle-kit generate --name=init",
     "db:migrate": "tsx db/migrate.ts",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
